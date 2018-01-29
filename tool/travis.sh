@@ -5,7 +5,7 @@ set -e
 
 # Verify that the libraries are error free.
 dartanalyzer --fatal-warnings \
-  lib/message.dart \
+  lib/osc.dart \
   test/all.dart
 
 # Run the tests.

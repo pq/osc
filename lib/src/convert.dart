@@ -2,7 +2,7 @@ import 'dart:convert';
 import 'dart:io';
 
 import 'package:meta/meta.dart';
-import 'package:osc/message.dart';
+import 'package:osc/src/message.dart';
 
 abstract class DataCodec<T> extends Codec<T, List<int>> {
   static final List<DataCodec<Object>> codecs =

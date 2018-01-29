@@ -1,9 +1,8 @@
 import 'dart:io';
 
 import 'package:ansicolor/ansicolor.dart';
-
-import 'package:osc/message.dart';
 import 'package:osc/src/convert.dart';
+import 'package:osc/src/message.dart';
 
 void main(List<String> args) {
   final destination = new InternetAddress(args[0]);

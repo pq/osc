@@ -1,6 +1,6 @@
-import 'package:osc/message.dart';
-import 'package:test/test.dart';
 import 'package:osc/src/convert.dart';
+import 'package:osc/src/message.dart';
+import 'package:test/test.dart';
 
 void main() {
   group('codecs', () {

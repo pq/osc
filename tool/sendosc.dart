@@ -5,6 +5,11 @@ import 'package:osc/src/convert.dart';
 import 'package:osc/src/message.dart';
 
 void main(List<String> args) {
+  if (args.length < 5 && (args.length & 1 == 0)) {
+    printUsage();
+    exit(15);
+  }
+
   final destination = new InternetAddress(args[0]);
   final port = int.parse(args[1]);
 
@@ -28,4 +33,8 @@ void main(List<String> args) {
     socket.send(bytes, destination, port);
     print(greenPen('$bytes'));
   });
+}
+
+void printUsage() {
+  print('Usage : sendosc host port path [[type] [param]] ...');
 }

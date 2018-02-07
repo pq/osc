@@ -15,6 +15,9 @@ class OSCMessage {
     _builder.addArguments(arguments);
   }
 
+  factory OSCMessage.fromBytes(List<int> bytes) =>
+      new OSCMessageParser(bytes).parse();
+
   @override
   String toString() => 'OSCMesssage($address, args: $arguments)';
 

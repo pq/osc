@@ -24,7 +24,6 @@ void main() {
               [47, 105, 110, 116, 0, 0, 0, 0, 44, 105, 0, 0, 0, 0, 0, 99]);
         });
       });
-
       group('decode', () {
         test('empty', () {
           final message = oscMessageCodec
@@ -38,6 +37,23 @@ void main() {
           expect(message.address, '/int');
           expect(message.arguments, <Object>[99]);
         });
+      });
+    });
+
+    group('equality', () {
+      test('==', () {
+        final message1 =
+            new OSCMessage('/baz', arguments: ['foo', 'bar', 1, 2, 3]);
+        final message2 =
+            new OSCMessage('/baz', arguments: ['foo', 'bar', 1, 2, 3]);
+        expect(message1, message2);
+      });
+      test('hash', () {
+        final message1 =
+            new OSCMessage('/baz', arguments: ['foo', 'bar', 1, 2, 3]);
+        final message2 =
+            new OSCMessage('/baz', arguments: ['foo', 'bar', 1, 2, 3, 4]);
+        expect(message1.hashCode, isNot(equals(message2.hashCode)));
       });
     });
 

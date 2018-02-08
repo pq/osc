@@ -1,3 +1,4 @@
+import 'package:collection/collection.dart';
 import 'package:osc/src/convert.dart';
 
 class OSCMessage {
@@ -17,6 +18,16 @@ class OSCMessage {
 
   factory OSCMessage.fromBytes(List<int> bytes) =>
       new OSCMessageParser(bytes).parse();
+
+  @override
+  bool operator ==(o) =>
+      o is OSCMessage &&
+      o.address == address &&
+      const IterableEquality().equals(o.arguments, arguments);
+
+  @override
+  int get hashCode =>
+      address.hashCode ^ const IterableEquality().hash(arguments);
 
   @override
   String toString() => 'OSCMesssage($address, args: $arguments)';

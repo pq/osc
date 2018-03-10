@@ -1,6 +1,6 @@
 # pub
 .packages
-.pub/
+.dart_tool
 build/
 pubspec.lock
 

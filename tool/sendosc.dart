@@ -22,7 +22,7 @@ void main(List<String> args) {
 
   final message = new OSCMessage(address, arguments: arguments);
 
-  RawDatagramSocket.bind(InternetAddress.ANY_IP_V4, 0).then((socket) {
+  RawDatagramSocket.bind(InternetAddress.anyIPv4, 0).then((socket) {
     final greenPen = new AnsiPen()..green(bold: true);
     final yellowPen = new AnsiPen()..xterm(003);
 

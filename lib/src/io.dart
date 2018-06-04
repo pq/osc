@@ -3,13 +3,21 @@ import 'dart:io';
 import 'package:osc/osc.dart';
 
 class OSCSocket {
-  final InternetAddress host;
+  final InternetAddress _host;
   final int port;
 
   RawDatagramSocket _socket;
 
-  OSCSocket({String host: '127.0.0.1', this.port})
-      : host = new InternetAddress(host);
+  OSCSocket({String host, this.port})
+      : _host = host != null
+            ? new InternetAddress(host)
+            : InternetAddress.loopbackIPv4;
+
+  InternetAddress get host => _host;
+
+  void close() {
+    _socket?.close();
+  }
 
   void listen(void onData(OSCMessage msg)) {
     RawDatagramSocket.bind(host, port).then((socket) {
@@ -22,9 +30,5 @@ class OSCSocket {
         }
       });
     });
-  }
-
-  void close() {
-    _socket?.close();
   }
 }

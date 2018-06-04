@@ -1,6 +1,15 @@
 import 'package:collection/collection.dart';
 import 'package:osc/src/convert.dart';
 
+final _illegalAddressChars = new RegExp('[#*,?]');
+
+//' ', '#', '*', ',', '?', '[', ']', '{', '}'
+bool _isValid(String address) =>
+    address != null &&
+    address.isNotEmpty &&
+    address[0] == '/' &&
+    !_illegalAddressChars.hasMatch(address);
+
 class OSCMessage {
   final String address;
   final List<Object> arguments;
@@ -20,26 +29,17 @@ class OSCMessage {
       new OSCMessageParser(bytes).parse();
 
   @override
+  int get hashCode =>
+      address.hashCode ^ const IterableEquality().hash(arguments);
+
+  @override
   bool operator ==(o) =>
       o is OSCMessage &&
       o.address == address &&
       const IterableEquality().equals(o.arguments, arguments);
 
-  @override
-  int get hashCode =>
-      address.hashCode ^ const IterableEquality().hash(arguments);
+  List<int> toBytes() => _builder.toBytes();
 
   @override
   String toString() => 'OSCMesssage($address, args: $arguments)';
-
-  List<int> toBytes() => _builder.toBytes();
 }
-
-//' ', '#', '*', ',', '?', '[', ']', '{', '}'
-final _illegalAddressChars = new RegExp('[#*,?]');
-
-bool _isValid(String address) =>
-    address != null &&
-    address.isNotEmpty &&
-    address[0] == '/' &&
-    !_illegalAddressChars.hasMatch(address);

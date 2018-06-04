@@ -4,6 +4,12 @@ import 'dart:io';
 import 'package:meta/meta.dart';
 import 'package:osc/src/message.dart';
 
+const IntCodec intCodec = const IntCodec();
+
+const OSCMessageCodec oscMessageCodec = const OSCMessageCodec();
+
+const StringCodec stringCodec = const StringCodec();
+
 abstract class DataCodec<T> extends Codec<T, List<int>> {
   static final List<DataCodec<Object>> codecs =
       new List<DataCodec<Object>>.unmodifiable(
@@ -13,6 +19,13 @@ abstract class DataCodec<T> extends Codec<T, List<int>> {
 
   const DataCodec({this.typeTag});
 
+  bool appliesTo(Object value) => value is T;
+
+  int length(T value);
+
+  T toValue(String string);
+
+  // TODO: Rename?
   static DataCodec<T> forType<T>(String typeTag) =>
       codecs.firstWhere((codec) => codec.typeTag == typeTag,
           orElse: () =>
@@ -22,13 +35,6 @@ abstract class DataCodec<T> extends Codec<T, List<int>> {
       codecs.firstWhere((codec) => codec.appliesTo(value),
           orElse: () => throw new ArgumentError(
               'Unsupported codec type: ${value.runtimeType}'));
-
-  bool appliesTo(Object value) => value is T;
-
-  // TODO: Rename?
-  int length(T value);
-
-  T toValue(String string);
 }
 
 abstract class DataDecoder<T> extends Converter<List<int>, T> {
@@ -38,10 +44,6 @@ abstract class DataDecoder<T> extends Converter<List<int>, T> {
 abstract class DataEncoder<T> extends Converter<T, List<int>> {
   const DataEncoder();
 }
-
-const IntCodec intCodec = const IntCodec();
-const StringCodec stringCodec = const StringCodec();
-const OSCMessageCodec oscMessageCodec = const OSCMessageCodec();
 
 class IntCodec extends DataCodec<int> {
   const IntCodec() : super(typeTag: 'i');
@@ -82,6 +84,133 @@ class IntEncoder extends DataEncoder<int> {
       ];
 }
 
+class OSCMessageBuilder {
+  final _builder = new BytesBuilder();
+
+  int get length => _builder.length;
+
+  void addAddress(String address) {
+    addString(address);
+  }
+
+  void addArguments(List<Object> args) {
+    final codecs = args.map(DataCodec.forValue).toList();
+
+    // Type tag (e.g., `,iis`).
+    final sb = new StringBuffer();
+    sb.write(',');
+    for (var codec in codecs) {
+      sb.write(codec.typeTag);
+    }
+    addString(sb.toString());
+
+    // Args.
+    for (var i = 0; i < args.length; ++i) {
+      addBytes(codecs[i].encode(args[i]));
+    }
+  }
+
+  void addBytes(List<int> bytes) {
+    _builder.add(bytes);
+  }
+
+  void addString(String string) {
+    _builder.add(stringCodec.encode(string));
+  }
+
+  List<int> toBytes() => _builder.toBytes();
+}
+
+class OSCMessageCodec extends Codec<OSCMessage, List<int>> {
+  const OSCMessageCodec();
+
+  @override
+  Converter<List<int>, OSCMessage> get decoder => const OSCMessageDecoder();
+
+  @override
+  Converter<OSCMessage, List<int>> get encoder => const OSCMessageEncoder();
+}
+
+class OSCMessageDecoder extends DataDecoder<OSCMessage> {
+  const OSCMessageDecoder();
+
+  @override
+  OSCMessage convert(List<int> input) => new OSCMessageParser(input).parse();
+}
+
+class OSCMessageEncoder extends DataEncoder<OSCMessage> {
+  const OSCMessageEncoder();
+
+  @override
+  List<int> convert(OSCMessage msg) {
+    final builder = new OSCMessageBuilder();
+    builder.addAddress(msg.address);
+    builder.addArguments(msg.arguments);
+    return builder.toBytes();
+  }
+}
+
+class OSCMessageParser {
+  int index = 0;
+
+  List<int> input;
+  OSCMessageParser(this.input);
+
+  void advance({@required String char}) {
+    if (input[index++] != stringCodec.encode(char)[0]) {
+      //TODO: throw
+    }
+  }
+
+  void align() {
+    index += (4 - index % 4) % 4;
+  }
+
+  String asString(List<int> bytes) => stringCodec.decode(bytes);
+
+  void eat({@required int byte}) {
+    if (input[++index] != byte) {
+      //TODO: throw
+    }
+  }
+
+  OSCMessage parse() {
+    final addressBytes = takeUntil(byte: 0);
+    final address = asString(addressBytes);
+
+    eat(byte: 0);
+    align();
+
+    advance(char: ',');
+    final args = <Object>[];
+    final typeTagBytes = takeUntil(byte: 0);
+    if (typeTagBytes.isNotEmpty) {
+      eat(byte: 0);
+      align();
+
+      final codecs =
+          typeTagBytes.map((b) => DataCodec.forType(asString(<int>[b])));
+      for (var codec in codecs) {
+        final value = codec.decode(input.sublist(index));
+        args.add(value);
+
+        index += codec.length(value);
+      }
+    }
+
+    return new OSCMessage(address, arguments: args);
+  }
+
+  List<int> takeUntil({@required int byte}) {
+    final count = input.indexOf(byte, index) - index;
+    if (count < 1) {
+      //TODO: throw
+    }
+
+    return input.sublist(index, index += count);
+  }
+}
+
 class StringCodec extends DataCodec<String> {
   const StringCodec() : super(typeTag: 's');
 
@@ -120,131 +249,4 @@ class StringEncoder extends DataEncoder<String> {
 
     return bytes;
   }
-}
-
-class OSCMessageDecoder extends DataDecoder<OSCMessage> {
-  const OSCMessageDecoder();
-
-  @override
-  OSCMessage convert(List<int> input) => new OSCMessageParser(input).parse();
-}
-
-class OSCMessageParser {
-  int index = 0;
-
-  List<int> input;
-  OSCMessageParser(this.input);
-
-  String asString(List<int> bytes) => stringCodec.decode(bytes);
-
-  OSCMessage parse() {
-    final addressBytes = takeUntil(byte: 0);
-    final address = asString(addressBytes);
-
-    eat(byte: 0);
-    align();
-
-    advance(char: ',');
-    final args = <Object>[];
-    final typeTagBytes = takeUntil(byte: 0);
-    if (typeTagBytes.isNotEmpty) {
-      eat(byte: 0);
-      align();
-
-      final codecs =
-          typeTagBytes.map((b) => DataCodec.forType(asString(<int>[b])));
-      for (var codec in codecs) {
-        final value = codec.decode(input.sublist(index));
-        args.add(value);
-
-        index += codec.length(value);
-      }
-    }
-
-    return new OSCMessage(address, arguments: args);
-  }
-
-  void eat({@required int byte}) {
-    if (input[++index] != byte) {
-      //TODO: throw
-    }
-  }
-
-  void advance({@required String char}) {
-    if (input[index++] != stringCodec.encode(char)[0]) {
-      //TODO: throw
-    }
-  }
-
-  List<int> takeUntil({@required int byte}) {
-    final count = input.indexOf(byte, index) - index;
-    if (count < 1) {
-      //TODO: throw
-    }
-
-    return input.sublist(index, index += count);
-  }
-
-  void align() {
-    index += (4 - index % 4) % 4;
-  }
-}
-
-class OSCMessageEncoder extends DataEncoder<OSCMessage> {
-  const OSCMessageEncoder();
-
-  @override
-  List<int> convert(OSCMessage msg) {
-    final builder = new OSCMessageBuilder();
-    builder.addAddress(msg.address);
-    builder.addArguments(msg.arguments);
-    return builder.toBytes();
-  }
-}
-
-class OSCMessageBuilder {
-  final _builder = new BytesBuilder();
-
-  void addAddress(String address) {
-    addString(address);
-  }
-
-  void addArguments(List<Object> args) {
-    final codecs = args.map(DataCodec.forValue).toList();
-
-    // Type tag (e.g., `,iis`).
-    final sb = new StringBuffer();
-    sb.write(',');
-    for (var codec in codecs) {
-      sb.write(codec.typeTag);
-    }
-    addString(sb.toString());
-
-    // Args.
-    for (var i = 0; i < args.length; ++i) {
-      addBytes(codecs[i].encode(args[i]));
-    }
-  }
-
-  void addBytes(List<int> bytes) {
-    _builder.add(bytes);
-  }
-
-  void addString(String string) {
-    _builder.add(stringCodec.encode(string));
-  }
-
-  int get length => _builder.length;
-
-  List<int> toBytes() => _builder.toBytes();
-}
-
-class OSCMessageCodec extends Codec<OSCMessage, List<int>> {
-  const OSCMessageCodec();
-
-  @override
-  Converter<List<int>, OSCMessage> get decoder => const OSCMessageDecoder();
-
-  @override
-  Converter<OSCMessage, List<int>> get encoder => const OSCMessageEncoder();
 }

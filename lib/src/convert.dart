@@ -231,7 +231,7 @@ class StringDecoder extends DataDecoder<String> {
   const StringDecoder();
 
   @override
-  String convert(List<int> input) => UTF8.decode(input);
+  String convert(List<int> input) => utf8.decode(input);
 }
 
 class StringEncoder extends DataEncoder<String> {
@@ -239,7 +239,7 @@ class StringEncoder extends DataEncoder<String> {
 
   @override
   List<int> convert(String input) {
-    final bytes = UTF8.encode(input).toList();
+    final bytes = utf8.encode(input).toList();
     bytes.add(0);
 
     var pad = (4 - bytes.length % 4) % 4;

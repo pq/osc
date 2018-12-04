@@ -7,7 +7,7 @@ void main() {
     group('forType', () {
       test('unknown', () {
         expect(() => DataCodec.forType('x'),
-            throwsA(const isInstanceOf<ArgumentError>()));
+            throwsA(const TypeMatcher<ArgumentError>()));
       });
     });
 

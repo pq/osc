@@ -10,3 +10,6 @@ doc/api/
 # IDEA
 /.idea
 /osc.iml
+
+# OS
+.DS_Store

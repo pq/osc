@@ -5,7 +5,7 @@ const int defaultPort = 4440;
 
 /// simple echo server; useful for testing.
 void main(List<String> args) {
-  var port = args.length == 1 ? int.parse(args[0]) : defaultPort;
+  final port = args.length == 1 ? int.parse(args[0]) : defaultPort;
   final greenPen = new AnsiPen()..green(bold: true);
   final bluePen = new AnsiPen()..blue(bold: true);
   final grayPen = new AnsiPen()..gray(level: 0.5);

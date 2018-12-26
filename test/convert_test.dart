@@ -67,6 +67,17 @@ void main() {
       });
     });
 
+    group('floats', () {
+      test('decode', () {
+        expect(floatCodec.decoder.convert([66, 246, 230, 102]),
+            closeTo(123.45, 1e-5));
+      });
+
+      test('encode', () {
+        expect(floatCodec.encoder.convert(123.45), [66, 246, 230, 102]);
+      });
+    });
+
     group('strings', () {
       test('decode', () {
         expect(stringCodec.decoder.convert([102, 111, 111]), 'foo');

@@ -1,10 +1,13 @@
 import 'dart:convert';
 import 'dart:io';
+import 'dart:typed_data';
 
 import 'package:meta/meta.dart';
 import 'package:osc/src/message.dart';
 
 const IntCodec intCodec = const IntCodec();
+
+const FloatCodec floatCodec = const FloatCodec();
 
 const OSCMessageCodec oscMessageCodec = const OSCMessageCodec();
 
@@ -13,7 +16,7 @@ const StringCodec stringCodec = const StringCodec();
 abstract class DataCodec<T> extends Codec<T, List<int>> {
   static final List<DataCodec<Object>> codecs =
       new List<DataCodec<Object>>.unmodifiable(
-          <DataCodec<Object>>[intCodec, stringCodec]);
+          <DataCodec<Object>>[intCodec, floatCodec, stringCodec]);
 
   final String typeTag;
 
@@ -65,23 +68,62 @@ class IntDecoder extends DataDecoder<int> {
   const IntDecoder();
 
   @override
-  int convert(List<int> value) =>
-      (value[0] << 24) & 0xFF |
-      (value[1] << 18) & 0xFF |
-      (value[2] << 8) & 0xFF |
-      (value[3] /* << 0 */) & 0xFF;
+  int convert(List<int> value) {
+    final buffer = Uint8List.fromList(value).buffer;
+    final byteData = new ByteData.view(buffer);
+    return byteData.getInt32(0);
+  }
 }
 
 class IntEncoder extends DataEncoder<int> {
   const IntEncoder();
 
   @override
-  List<int> convert(int value) => <int>[
-        (value >> 24) & 0xFF,
-        (value >> 18) & 0xFF,
-        (value >> 8) & 0xFF,
-        (value /* >> 0 */) & 0xFF,
-      ];
+  List<int> convert(int value) {
+    final list = new Uint8List(4);
+    final byteData = new ByteData.view(list.buffer);
+    byteData.setInt32(0, value);
+    return list;
+  }
+}
+
+class FloatCodec extends DataCodec<double> {
+  const FloatCodec() : super(typeTag: 'f');
+
+  @override
+  Converter<List<int>, double> get decoder => const FloatDecoder();
+
+  @override
+  Converter<double, List<int>> get encoder => const FloatEncoder();
+
+  @override
+  int length(double value) => 4;
+
+  @override
+  double toValue(String string) => double.parse(string);
+}
+
+class FloatDecoder extends DataDecoder<double> {
+  const FloatDecoder();
+
+  @override
+  double convert(List<int> value) {
+    final buffer = Uint8List.fromList(value).buffer;
+    final byteData = new ByteData.view(buffer);
+    return byteData.getFloat32(0);
+  }
+}
+
+class FloatEncoder extends DataEncoder<double> {
+  const FloatEncoder();
+
+  @override
+  List<int> convert(double value) {
+    final list = new Uint8List(4);
+    final bdata = new ByteData.view(list.buffer);
+    bdata.setFloat32(0, value);
+    return list;
+  }
 }
 
 class OSCMessageBuilder {
@@ -242,10 +284,8 @@ class StringEncoder extends DataEncoder<String> {
     final bytes = utf8.encode(input).toList();
     bytes.add(0);
 
-    var pad = (4 - bytes.length % 4) % 4;
-    while (pad-- > 0) {
-      bytes.add(0);
-    }
+    final pad = (4 - bytes.length % 4) % 4;
+    bytes.addAll(List.generate(pad, (i) => 0));
 
     return bytes;
   }

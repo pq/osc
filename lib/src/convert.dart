@@ -5,17 +5,17 @@ import 'dart:typed_data';
 import 'package:meta/meta.dart';
 import 'package:osc/src/message.dart';
 
-const IntCodec intCodec = const IntCodec();
+const IntCodec intCodec = IntCodec();
 
-const FloatCodec floatCodec = const FloatCodec();
+const FloatCodec floatCodec = FloatCodec();
 
-const OSCMessageCodec oscMessageCodec = const OSCMessageCodec();
+const OSCMessageCodec oscMessageCodec = OSCMessageCodec();
 
-const StringCodec stringCodec = const StringCodec();
+const StringCodec stringCodec = StringCodec();
 
 abstract class DataCodec<T> extends Codec<T, List<int>> {
   static final List<DataCodec<Object>> codecs =
-      new List<DataCodec<Object>>.unmodifiable(
+      List<DataCodec<Object>>.unmodifiable(
           <DataCodec<Object>>[intCodec, floatCodec, stringCodec]);
 
   final String typeTag;
@@ -29,15 +29,14 @@ abstract class DataCodec<T> extends Codec<T, List<int>> {
   T toValue(String string);
 
   // TODO: Rename?
-  static DataCodec<T> forType<T>(String typeTag) =>
-      codecs.firstWhere((codec) => codec.typeTag == typeTag,
-          orElse: () =>
-              throw new ArgumentError('Unsupported codec typeTag: $typeTag'));
+  static DataCodec<T> forType<T>(String typeTag) => codecs.firstWhere(
+      (codec) => codec.typeTag == typeTag,
+      orElse: () => throw ArgumentError('Unsupported codec typeTag: $typeTag'));
 
-  static DataCodec<T> forValue<T>(T value) =>
-      codecs.firstWhere((codec) => codec.appliesTo(value),
-          orElse: () => throw new ArgumentError(
-              'Unsupported codec type: ${value.runtimeType}'));
+  static DataCodec<T> forValue<T>(T value) => codecs.firstWhere(
+      (codec) => codec.appliesTo(value),
+      orElse: () =>
+          throw ArgumentError('Unsupported codec type: ${value.runtimeType}'));
 }
 
 abstract class DataDecoder<T> extends Converter<List<int>, T> {
@@ -70,7 +69,7 @@ class IntDecoder extends DataDecoder<int> {
   @override
   int convert(List<int> value) {
     final buffer = Uint8List.fromList(value).buffer;
-    final byteData = new ByteData.view(buffer);
+    final byteData = ByteData.view(buffer);
     return byteData.getInt32(0);
   }
 }
@@ -80,8 +79,8 @@ class IntEncoder extends DataEncoder<int> {
 
   @override
   List<int> convert(int value) {
-    final list = new Uint8List(4);
-    final byteData = new ByteData.view(list.buffer);
+    final list = Uint8List(4);
+    final byteData = ByteData.view(list.buffer);
     byteData.setInt32(0, value);
     return list;
   }
@@ -109,7 +108,7 @@ class FloatDecoder extends DataDecoder<double> {
   @override
   double convert(List<int> value) {
     final buffer = Uint8List.fromList(value).buffer;
-    final byteData = new ByteData.view(buffer);
+    final byteData = ByteData.view(buffer);
     return byteData.getFloat32(0);
   }
 }
@@ -119,15 +118,15 @@ class FloatEncoder extends DataEncoder<double> {
 
   @override
   List<int> convert(double value) {
-    final list = new Uint8List(4);
-    final bdata = new ByteData.view(list.buffer);
+    final list = Uint8List(4);
+    final bdata = ByteData.view(list.buffer);
     bdata.setFloat32(0, value);
     return list;
   }
 }
 
 class OSCMessageBuilder {
-  final _builder = new BytesBuilder();
+  final _builder = BytesBuilder();
 
   int get length => _builder.length;
 
@@ -139,7 +138,7 @@ class OSCMessageBuilder {
     final codecs = args.map(DataCodec.forValue).toList();
 
     // Type tag (e.g., `,iis`).
-    final sb = new StringBuffer();
+    final sb = StringBuffer();
     sb.write(',');
     for (var codec in codecs) {
       sb.write(codec.typeTag);
@@ -177,7 +176,7 @@ class OSCMessageDecoder extends DataDecoder<OSCMessage> {
   const OSCMessageDecoder();
 
   @override
-  OSCMessage convert(List<int> input) => new OSCMessageParser(input).parse();
+  OSCMessage convert(List<int> input) => OSCMessageParser(input).parse();
 }
 
 class OSCMessageEncoder extends DataEncoder<OSCMessage> {
@@ -185,7 +184,7 @@ class OSCMessageEncoder extends DataEncoder<OSCMessage> {
 
   @override
   List<int> convert(OSCMessage msg) {
-    final builder = new OSCMessageBuilder();
+    final builder = OSCMessageBuilder();
     builder.addAddress(msg.address);
     builder.addArguments(msg.arguments);
     return builder.toBytes();
@@ -240,7 +239,7 @@ class OSCMessageParser {
       }
     }
 
-    return new OSCMessage(address, arguments: args);
+    return OSCMessage(address, arguments: args);
   }
 
   List<int> takeUntil({@required int byte}) {

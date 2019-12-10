@@ -14,12 +14,12 @@ void main() {
     group('messages', () {
       group('encode', () {
         test('empty', () {
-          final message = new OSCMessage('/empty', arguments: []);
+          final message = OSCMessage('/empty', arguments: []);
           expect(oscMessageCodec.encode(message),
               [47, 101, 109, 112, 116, 121, 0, 0, 44, 0, 0, 0]);
         });
         test('int', () {
-          final message = new OSCMessage('/int', arguments: [99]);
+          final message = OSCMessage('/int', arguments: [99]);
           expect(oscMessageCodec.encode(message),
               [47, 105, 110, 116, 0, 0, 0, 0, 44, 105, 0, 0, 0, 0, 0, 99]);
         });
@@ -42,17 +42,14 @@ void main() {
 
     group('equality', () {
       test('==', () {
-        final message1 =
-            new OSCMessage('/baz', arguments: ['foo', 'bar', 1, 2, 3]);
-        final message2 =
-            new OSCMessage('/baz', arguments: ['foo', 'bar', 1, 2, 3]);
+        final message1 = OSCMessage('/baz', arguments: ['foo', 'bar', 1, 2, 3]);
+        final message2 = OSCMessage('/baz', arguments: ['foo', 'bar', 1, 2, 3]);
         expect(message1, message2);
       });
       test('hash', () {
-        final message1 =
-            new OSCMessage('/baz', arguments: ['foo', 'bar', 1, 2, 3]);
+        final message1 = OSCMessage('/baz', arguments: ['foo', 'bar', 1, 2, 3]);
         final message2 =
-            new OSCMessage('/baz', arguments: ['foo', 'bar', 1, 2, 3, 4]);
+            OSCMessage('/baz', arguments: ['foo', 'bar', 1, 2, 3, 4]);
         expect(message1.hashCode, isNot(equals(message2.hashCode)));
       });
     });

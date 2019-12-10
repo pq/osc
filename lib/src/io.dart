@@ -3,32 +3,38 @@ import 'dart:io';
 import 'package:osc/osc.dart';
 
 class OSCSocket {
-  final InternetAddress _host;
+  final InternetAddress _address;
   final int port;
 
   RawDatagramSocket _socket;
 
-  OSCSocket({String host, this.port})
-      : _host = host != null
-            ? new InternetAddress(host)
+  OSCSocket({String address, this.port})
+      : _address = address != null
+            ? InternetAddress(address)
             : InternetAddress.loopbackIPv4;
 
-  InternetAddress get host => _host;
+  InternetAddress get address => _address;
 
   void close() {
     _socket?.close();
   }
 
-  void listen(void onData(OSCMessage msg)) {
-    RawDatagramSocket.bind(host, port).then((socket) {
+  void listen(void Function(OSCMessage msg) onData) {
+    RawDatagramSocket.bind(address, port).then((socket) {
       _socket = socket;
       _socket.listen((e) {
         final datagram = socket.receive();
         if (datagram != null) {
-          final msg = new OSCMessage.fromBytes(datagram.data);
+          final msg = OSCMessage.fromBytes(datagram.data);
           onData(msg);
         }
       });
+    });
+  }
+
+  Future<int> send(OSCMessage msg) {
+    return RawDatagramSocket.bind(InternetAddress.anyIPv4, 0).then((socket) {
+      return socket.send(msg.toBytes(), address, port);
     });
   }
 }

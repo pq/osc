@@ -1,7 +1,7 @@
 import 'package:collection/collection.dart';
 import 'package:osc/src/convert.dart';
 
-final _illegalAddressChars = new RegExp('[#*,?]');
+final _illegalAddressChars = RegExp('[#*,?]');
 
 //' ', '#', '*', ',', '?', '[', ']', '{', '}'
 bool _isValid(String address) =>
@@ -14,11 +14,11 @@ class OSCMessage {
   final String address;
   final List<Object> arguments;
 
-  final _builder = new OSCMessageBuilder();
+  final _builder = OSCMessageBuilder();
 
   OSCMessage(this.address, {this.arguments}) {
     if (!_isValid(address)) {
-      throw new ArgumentError('Invalid address: $address');
+      throw ArgumentError('Invalid address: $address');
     }
 
     _builder.addAddress(address);
@@ -26,7 +26,7 @@ class OSCMessage {
   }
 
   factory OSCMessage.fromBytes(List<int> bytes) =>
-      new OSCMessageParser(bytes).parse();
+      OSCMessageParser(bytes).parse();
 
   @override
   int get hashCode =>

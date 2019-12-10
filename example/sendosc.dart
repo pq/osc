@@ -10,7 +10,7 @@ void main(List<String> args) {
     exit(15);
   }
 
-  final destination = new InternetAddress(args[0]);
+  final destination = InternetAddress(args[0]);
   final port = int.parse(args[1]);
 
   final address = args[2];
@@ -20,11 +20,11 @@ void main(List<String> args) {
     arguments.add(DataCodec.forType(args[i]).toValue(args[i + 1]));
   }
 
-  final message = new OSCMessage(address, arguments: arguments);
+  final message = OSCMessage(address, arguments: arguments);
 
   RawDatagramSocket.bind(InternetAddress.anyIPv4, 0).then((socket) {
-    final greenPen = new AnsiPen()..green(bold: true);
-    final yellowPen = new AnsiPen()..xterm(003);
+    final greenPen = AnsiPen()..green(bold: true);
+    final yellowPen = AnsiPen()..xterm(003);
 
     print(
         yellowPen('Sending from ${socket.address.address}:${socket.port}...'));

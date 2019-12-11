@@ -24,7 +24,7 @@ void main(List<String> args) {
 
   RawDatagramSocket.bind(InternetAddress.anyIPv4, 0).then((socket) {
     final greenPen = AnsiPen()..green(bold: true);
-    final yellowPen = AnsiPen()..xterm(003);
+    final yellowPen = AnsiPen()..yellow();
 
     print(
         yellowPen('Sending from ${socket.address.address}:${socket.port}...'));

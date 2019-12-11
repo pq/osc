@@ -3,11 +3,12 @@ import 'dart:io';
 import 'dart:typed_data';
 
 import 'package:meta/meta.dart';
-import 'package:osc/src/message.dart';
 
-const IntCodec intCodec = IntCodec();
+import 'message.dart';
 
 const FloatCodec floatCodec = FloatCodec();
+
+const IntCodec intCodec = IntCodec();
 
 const OSCMessageCodec oscMessageCodec = OSCMessageCodec();
 
@@ -47,6 +48,45 @@ abstract class DataEncoder<T> extends Converter<T, List<int>> {
   const DataEncoder();
 }
 
+class FloatCodec extends DataCodec<double> {
+  const FloatCodec() : super(typeTag: 'f');
+
+  @override
+  Converter<List<int>, double> get decoder => const FloatDecoder();
+
+  @override
+  Converter<double, List<int>> get encoder => const FloatEncoder();
+
+  @override
+  int length(double value) => 4;
+
+  @override
+  double toValue(String string) => double.parse(string);
+}
+
+class FloatDecoder extends DataDecoder<double> {
+  const FloatDecoder();
+
+  @override
+  double convert(List<int> value) {
+    final buffer = Uint8List.fromList(value).buffer;
+    final byteData = ByteData.view(buffer);
+    return byteData.getFloat32(0);
+  }
+}
+
+class FloatEncoder extends DataEncoder<double> {
+  const FloatEncoder();
+
+  @override
+  List<int> convert(double value) {
+    final list = Uint8List(4);
+    final byteData = ByteData.view(list.buffer);
+    byteData.setFloat32(0, value);
+    return list;
+  }
+}
+
 class IntCodec extends DataCodec<int> {
   const IntCodec() : super(typeTag: 'i');
 
@@ -82,45 +122,6 @@ class IntEncoder extends DataEncoder<int> {
     final list = Uint8List(4);
     final byteData = ByteData.view(list.buffer);
     byteData.setInt32(0, value);
-    return list;
-  }
-}
-
-class FloatCodec extends DataCodec<double> {
-  const FloatCodec() : super(typeTag: 'f');
-
-  @override
-  Converter<List<int>, double> get decoder => const FloatDecoder();
-
-  @override
-  Converter<double, List<int>> get encoder => const FloatEncoder();
-
-  @override
-  int length(double value) => 4;
-
-  @override
-  double toValue(String string) => double.parse(string);
-}
-
-class FloatDecoder extends DataDecoder<double> {
-  const FloatDecoder();
-
-  @override
-  double convert(List<int> value) {
-    final buffer = Uint8List.fromList(value).buffer;
-    final byteData = ByteData.view(buffer);
-    return byteData.getFloat32(0);
-  }
-}
-
-class FloatEncoder extends DataEncoder<double> {
-  const FloatEncoder();
-
-  @override
-  List<int> convert(double value) {
-    final list = Uint8List(4);
-    final bdata = ByteData.view(list.buffer);
-    bdata.setFloat32(0, value);
     return list;
   }
 }
@@ -194,7 +195,7 @@ class OSCMessageEncoder extends DataEncoder<OSCMessage> {
 class OSCMessageParser {
   int index = 0;
 
-  List<int> input;
+  final List<int> input;
   OSCMessageParser(this.input);
 
   void advance({@required String char}) {

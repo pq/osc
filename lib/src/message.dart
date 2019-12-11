@@ -1,5 +1,6 @@
 import 'package:collection/collection.dart';
-import 'package:osc/src/convert.dart';
+
+import 'convert.dart';
 
 final _illegalAddressChars = RegExp('[#*,?]');
 

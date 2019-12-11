@@ -1,6 +1,6 @@
 import 'dart:io';
 
-import 'package:osc/osc.dart';
+import '../osc.dart';
 
 class OSCSocket {
   final InternetAddress _address;

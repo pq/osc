@@ -9,7 +9,7 @@
 			"modernui" : 1
 		}
 ,
-		"rect" : [ 323.0, 277.0, 871.0, 781.0 ],
+		"rect" : [ 1023.0, 304.0, 871.0, 781.0 ],
 		"bglocked" : 0,
 		"openinpresentation" : 0,
 		"default_fontsize" : 12.0,
@@ -294,7 +294,7 @@
 					"readonly" : 1,
 					"style" : "",
 					"tabmode" : 0,
-					"text" : "/grid/led/level/set 0 0 4"
+					"text" : "/foo/bar"
 				}
 
 			}

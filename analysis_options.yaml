@@ -1,5 +1,9 @@
 include: package:pedantic/analysis_options.yaml
 
+analyzer:
+  errors:
+    missing_required_param: warning
+
 linter:
   rules:
     - prefer_relative_imports

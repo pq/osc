@@ -9,7 +9,7 @@
 			"modernui" : 1
 		}
 ,
-		"rect" : [ 545.0, 511.0, 1089.0, 781.0 ],
+		"rect" : [ 323.0, 277.0, 871.0, 781.0 ],
 		"bglocked" : 0,
 		"openinpresentation" : 0,
 		"default_fontsize" : 12.0,
@@ -45,7 +45,7 @@
 					"maxclass" : "comment",
 					"numinlets" : 1,
 					"numoutlets" : 0,
-					"patching_rect" : [ 583.0, 338.514557, 177.0, 60.0 ],
+					"patching_rect" : [ 496.0, 281.514557, 177.0, 60.0 ],
 					"style" : "",
 					"text" : "monome grid emulation"
 				}
@@ -59,7 +59,7 @@
 					"maxclass" : "comment",
 					"numinlets" : 1,
 					"numoutlets" : 0,
-					"patching_rect" : [ 102.0, 237.0, 69.0, 33.0 ],
+					"patching_rect" : [ 15.0, 180.0, 69.0, 33.0 ],
 					"style" : "",
 					"text" : "echo"
 				}
@@ -72,7 +72,7 @@
 					"numinlets" : 2,
 					"numoutlets" : 2,
 					"outlettype" : [ "", "" ],
-					"patching_rect" : [ 541.0, 424.529114, 87.0, 22.0 ],
+					"patching_rect" : [ 454.0, 367.529114, 87.0, 22.0 ],
 					"style" : "",
 					"text" : "route /grid/key"
 				}
@@ -87,7 +87,7 @@
 					"numoutlets" : 2,
 					"outlettype" : [ "list", "list" ],
 					"parameter_enable" : 0,
-					"patching_rect" : [ 541.0, 458.014557, 130.0, 66.0 ],
+					"patching_rect" : [ 454.0, 401.014557, 130.0, 66.0 ],
 					"rows" : 8,
 					"style" : ""
 				}
@@ -100,7 +100,7 @@
 					"numinlets" : 2,
 					"numoutlets" : 1,
 					"outlettype" : [ "" ],
-					"patching_rect" : [ 541.0, 545.014526, 151.0, 22.0 ],
+					"patching_rect" : [ 454.0, 488.014526, 151.0, 22.0 ],
 					"style" : "",
 					"text" : "/grid/led/level/set $1 $2 $3"
 				}
@@ -113,7 +113,7 @@
 					"numinlets" : 2,
 					"numoutlets" : 1,
 					"outlettype" : [ "" ],
-					"patching_rect" : [ 567.0, 623.014526, 61.0, 22.0 ],
+					"patching_rect" : [ 480.0, 566.014526, 61.0, 22.0 ],
 					"style" : "",
 					"text" : "port 4440"
 				}
@@ -126,7 +126,7 @@
 					"numinlets" : 2,
 					"numoutlets" : 1,
 					"outlettype" : [ "" ],
-					"patching_rect" : [ 640.0, 623.014526, 132.0, 22.0 ],
+					"patching_rect" : [ 553.0, 566.014526, 132.0, 22.0 ],
 					"style" : "",
 					"text" : "/grid/led/level/set 0 0 4"
 				}
@@ -141,7 +141,7 @@
 					"maxclass" : "newobj",
 					"numinlets" : 1,
 					"numoutlets" : 0,
-					"patching_rect" : [ 541.0, 682.014526, 151.0, 23.0 ],
+					"patching_rect" : [ 454.0, 625.014526, 151.0, 23.0 ],
 					"style" : "",
 					"text" : "udpsend 127.0.0.1 4440"
 				}
@@ -156,7 +156,7 @@
 					"maxclass" : "comment",
 					"numinlets" : 1,
 					"numoutlets" : 0,
-					"patching_rect" : [ 259.5, 325.0, 132.0, 36.0 ],
+					"patching_rect" : [ 172.5, 268.0, 132.0, 36.0 ],
 					"style" : "",
 					"text" : "set port to send messages to at host",
 					"textcolor" : [ 0.501961, 0.501961, 0.501961, 1.0 ]
@@ -171,7 +171,7 @@
 					"maxclass" : "comment",
 					"numinlets" : 1,
 					"numoutlets" : 0,
-					"patching_rect" : [ 210.0, 287.5, 150.0, 21.0 ],
+					"patching_rect" : [ 123.0, 230.5, 150.0, 21.0 ],
 					"style" : "",
 					"text" : "set the host ip address",
 					"textcolor" : [ 0.501961, 0.501961, 0.501961, 1.0 ]
@@ -187,7 +187,7 @@
 					"numinlets" : 2,
 					"numoutlets" : 1,
 					"outlettype" : [ "" ],
-					"patching_rect" : [ 182.5, 325.0, 65.0, 23.0 ],
+					"patching_rect" : [ 95.5, 268.0, 65.0, 23.0 ],
 					"style" : "",
 					"text" : "port 4440"
 				}
@@ -201,7 +201,7 @@
 					"maxclass" : "comment",
 					"numinlets" : 1,
 					"numoutlets" : 0,
-					"patching_rect" : [ 105.0, 139.0, 411.0, 21.0 ],
+					"patching_rect" : [ 18.0, 82.0, 411.0, 21.0 ],
 					"style" : "",
 					"text" : "Receive OSC messages.",
 					"textcolor" : [ 0.0, 0.0, 0.0, 1.0 ]
@@ -216,7 +216,7 @@
 					"maxclass" : "comment",
 					"numinlets" : 1,
 					"numoutlets" : 0,
-					"patching_rect" : [ 105.0, 70.0, 317.0, 60.0 ],
+					"patching_rect" : [ 18.0, 13.0, 317.0, 60.0 ],
 					"style" : "",
 					"text" : "osc_receiver",
 					"textcolor" : [ 0.0, 0.0, 0.0, 1.0 ]
@@ -232,7 +232,7 @@
 					"numinlets" : 2,
 					"numoutlets" : 1,
 					"outlettype" : [ "" ],
-					"patching_rect" : [ 102.0, 287.5, 93.0, 23.0 ],
+					"patching_rect" : [ 15.0, 230.5, 93.0, 23.0 ],
 					"style" : "",
 					"text" : "host 127.0.0.1"
 				}
@@ -246,7 +246,7 @@
 					"maxclass" : "comment",
 					"numinlets" : 1,
 					"numoutlets" : 0,
-					"patching_rect" : [ 105.0, 165.0, 411.0, 21.0 ],
+					"patching_rect" : [ 18.0, 108.0, 411.0, 21.0 ],
 					"style" : "",
 					"text" : "Receives OSC messages transmitted over a network using UDP.",
 					"textcolor" : [ 0.501961, 0.501961, 0.501961, 1.0 ]
@@ -259,7 +259,7 @@
 					"maxclass" : "comment",
 					"numinlets" : 1,
 					"numoutlets" : 0,
-					"patching_rect" : [ 279.0, 420.514557, 121.0, 20.0 ],
+					"patching_rect" : [ 192.0, 363.514557, 121.0, 20.0 ],
 					"style" : "",
 					"text" : "Received Messages"
 				}
@@ -272,7 +272,7 @@
 					"numinlets" : 1,
 					"numoutlets" : 1,
 					"outlettype" : [ "" ],
-					"patching_rect" : [ 102.0, 407.757263, 72.0, 22.0 ],
+					"patching_rect" : [ 15.0, 350.757263, 72.0, 22.0 ],
 					"style" : "",
 					"text" : "prepend set"
 				}
@@ -290,11 +290,11 @@
 					"numoutlets" : 4,
 					"outlettype" : [ "", "int", "", "" ],
 					"parameter_enable" : 0,
-					"patching_rect" : [ 102.0, 442.514557, 294.0, 95.0 ],
+					"patching_rect" : [ 15.0, 385.514557, 294.0, 95.0 ],
 					"readonly" : 1,
 					"style" : "",
 					"tabmode" : 0,
-					"text" : "/grid/led/level/set 13 2 0"
+					"text" : "/grid/led/level/set 0 0 4"
 				}
 
 			}
@@ -305,7 +305,7 @@
 					"numinlets" : 1,
 					"numoutlets" : 1,
 					"outlettype" : [ "" ],
-					"patching_rect" : [ 102.0, 372.0, 99.0, 22.0 ],
+					"patching_rect" : [ 15.0, 315.0, 99.0, 22.0 ],
 					"style" : "newobjBlue-1",
 					"text" : "udpreceive 4440"
 				}
@@ -322,7 +322,7 @@
 , 			{
 				"patchline" : 				{
 					"destination" : [ "obj-16", 0 ],
-					"midpoints" : [ 576.5, 668.014526, 550.5, 668.014526 ],
+					"midpoints" : [ 489.5, 611.014526, 463.5, 611.014526 ],
 					"source" : [ "obj-11", 0 ]
 				}
 
@@ -330,7 +330,7 @@
 , 			{
 				"patchline" : 				{
 					"destination" : [ "obj-16", 0 ],
-					"midpoints" : [ 649.5, 668.014526, 550.5, 668.014526 ],
+					"midpoints" : [ 562.5, 611.014526, 463.5, 611.014526 ],
 					"source" : [ "obj-13", 0 ]
 				}
 
@@ -346,7 +346,7 @@
 , 			{
 				"patchline" : 				{
 					"destination" : [ "obj-9", 0 ],
-					"midpoints" : [ 111.5, 399.0, 550.5, 399.0 ],
+					"midpoints" : [ 24.5, 342.0, 463.5, 342.0 ],
 					"order" : 0,
 					"source" : [ "obj-15", 0 ]
 				}
@@ -362,7 +362,7 @@
 , 			{
 				"patchline" : 				{
 					"destination" : [ "obj-15", 0 ],
-					"midpoints" : [ 192.0, 351.0, 111.5, 351.0 ],
+					"midpoints" : [ 105.0, 294.0, 24.5, 294.0 ],
 					"source" : [ "obj-6", 0 ]
 				}
 

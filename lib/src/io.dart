@@ -6,7 +6,8 @@ class OSCSocket {
   final InternetAddress _address;
   final int port;
 
-  RawDatagramSocket _socket;
+  RawDatagramSocket _receiveSocket;
+  RawDatagramSocket _sendSocket;
 
   OSCSocket({String address, this.port})
       : _address = address != null
@@ -16,25 +17,23 @@ class OSCSocket {
   InternetAddress get address => _address;
 
   void close() {
-    _socket?.close();
+    _receiveSocket?.close();
+    _sendSocket?.close();
   }
 
-  void listen(void Function(OSCMessage msg) onData) {
-    RawDatagramSocket.bind(address, port).then((socket) {
-      _socket = socket;
-      _socket.listen((e) {
-        final datagram = socket.receive();
-        if (datagram != null) {
-          final msg = OSCMessage.fromBytes(datagram.data);
-          onData(msg);
-        }
-      });
+  Future<void> listen(void Function(OSCMessage msg) onData) async {
+    _receiveSocket ??= await RawDatagramSocket.bind(address, port);
+    _receiveSocket.listen((e) {
+      final datagram = _receiveSocket.receive();
+      if (datagram != null) {
+        final msg = OSCMessage.fromBytes(datagram.data);
+        onData(msg);
+      }
     });
   }
 
-  Future<int> send(OSCMessage msg) {
-    return RawDatagramSocket.bind(InternetAddress.anyIPv4, 0).then((socket) {
-      return socket.send(msg.toBytes(), address, port);
-    });
+  Future<int> send(OSCMessage msg) async {
+    _sendSocket ??= await RawDatagramSocket.bind(InternetAddress.anyIPv4, 0);
+    return _sendSocket.send(msg.toBytes(), address, port);
   }
 }

@@ -237,6 +237,8 @@ class OSCMessageParser {
         args.add(value);
 
         index += codec.length(value);
+        eat(byte: 0);
+        align();
       }
     }
 
@@ -273,7 +275,14 @@ class StringDecoder extends DataDecoder<String> {
   const StringDecoder();
 
   @override
-  String convert(List<int> input) => utf8.decode(input);
+  String convert(List<int> input) {
+    final nextNull = input.indexOf(0);
+    if (nextNull == -1) {
+      return utf8.decode(input);
+    } else {
+      return utf8.decode(input.sublist(0, nextNull));
+    }
+  }
 }
 
 class StringEncoder extends DataEncoder<String> {

@@ -237,7 +237,7 @@ class OSCMessageParser {
         args.add(value);
 
         index += codec.length(value);
-        eat(byte: 0);
+        if (value is String) eat(byte: 0);
         align();
       }
     }
@@ -290,7 +290,8 @@ class StringEncoder extends DataEncoder<String> {
 
   @override
   List<int> convert(String input) {
-    final bytes = utf8.encode(input).toList();
+    // final bytes = utf8.encode(input).toList();
+    final bytes = input.codeUnits.toList();
     bytes.add(0);
 
     final pad = (4 - bytes.length % 4) % 4;

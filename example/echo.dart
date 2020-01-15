@@ -12,7 +12,9 @@ void main(List<String> args) {
 
   print(greenPen('echo osc listening on port $port... (^C to quit)'));
 
-  final socket = OSCSocket(port: port);
-  socket.listen(
-      (msg) => print("${grayPen('received:')} ${bluePen(msg.toString())}"));
+  final socket = OSCSocket(serverPort: port);
+  socket.listen((msg) {
+    print("${grayPen('received:')} ${bluePen(msg.toString())}");
+    socket.reply(OSCMessage('/received', arguments: []));
+  });
 }

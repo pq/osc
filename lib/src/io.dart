@@ -3,29 +3,42 @@ import 'dart:io';
 import '../osc.dart';
 
 class OSCSocket {
-  final InternetAddress _address;
-  final int port;
+  final InternetAddress destination;
+  final int destinationPort;
 
-  RawDatagramSocket _receiveSocket;
-  RawDatagramSocket _sendSocket;
+  final InternetAddress serverAddress;
+  final int serverPort;
 
-  OSCSocket({String address, this.port})
-      : _address = address != null
-            ? InternetAddress(address)
-            : InternetAddress.loopbackIPv4;
+  InternetAddress lastMessageAddress;
+  int lastMessagePort;
 
-  InternetAddress get address => _address;
+  RawDatagramSocket _socket;
+
+  OSCSocket({
+    this.destination,
+    this.destinationPort,
+    this.serverAddress,
+    this.serverPort,
+  });
 
   void close() {
-    _receiveSocket?.close();
-    _sendSocket?.close();
+    _socket?.close();
+  }
+
+  Future<RawDatagramSocket> setupSocket() async {
+    var address = serverAddress ?? InternetAddress.anyIPv4;
+    var port = serverPort ?? 0;
+    return RawDatagramSocket.bind(address, port);
   }
 
   Future<void> listen(void Function(OSCMessage msg) onData) async {
-    _receiveSocket ??= await RawDatagramSocket.bind(address, port);
-    _receiveSocket.listen((e) {
-      final datagram = _receiveSocket.receive();
+    _socket ??= await setupSocket();
+
+    _socket.listen((e) {
+      final datagram = _socket.receive();
       if (datagram != null) {
+        lastMessageAddress = datagram.address;
+        lastMessagePort = datagram.port;
         final msg = OSCMessage.fromBytes(datagram.data);
         onData(msg);
       }
@@ -33,7 +46,17 @@ class OSCSocket {
   }
 
   Future<int> send(OSCMessage msg) async {
-    _sendSocket ??= await RawDatagramSocket.bind(InternetAddress.anyIPv4, 0);
-    return _sendSocket.send(msg.toBytes(), address, port);
+    _socket ??= await setupSocket();
+    var to = destination ?? lastMessageAddress;
+    var port = destinationPort ?? lastMessagePort;
+
+    if (to == null || port == null) return 0;
+    return _socket.send(msg.toBytes(), to, port);
+  }
+
+  Future<int> reply(OSCMessage msg) async {
+    _socket ??= await setupSocket();
+    if (lastMessageAddress == null || lastMessagePort == null) return 0;
+    return _socket.send(msg.toBytes(), lastMessageAddress, lastMessagePort);
   }
 }

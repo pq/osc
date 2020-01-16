@@ -226,6 +226,8 @@ class OSCMessageParser {
     advance(char: ',');
     final args = <Object>[];
     final typeTagBytes = takeUntil(byte: 0);
+    print('----------------------------------');
+    print(address);
     if (typeTagBytes.isNotEmpty) {
       eat(byte: 0);
       align();
@@ -237,7 +239,7 @@ class OSCMessageParser {
         args.add(value);
 
         index += codec.length(value);
-        if (value is String) eat(byte: 0);
+        // if (value is String) eat(byte: 0);
         align();
       }
     }

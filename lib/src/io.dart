@@ -31,6 +31,8 @@ class OSCSocket {
     return RawDatagramSocket.bind(address, port);
   }
 
+  // RawDatagramSockets don't support onDone, onError callbacks
+  // because they UDP has no concept of a "connection" that can be closed.
   Future<void> listen(void Function(OSCMessage msg) onData) async {
     _socket ??= await setupSocket();
 

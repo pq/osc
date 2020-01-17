@@ -73,9 +73,9 @@ class BlobDecoder extends DataDecoder<Uint8List> {
   Uint8List convert(List<int> value) {
     final buffer = Uint8List.fromList(value).buffer;
     final byteData = ByteData.view(buffer);
-    var index = 0;
-    final len = byteData.getInt32(index);
-    return value.sublist(index + 4, len);
+    final len = byteData.getInt32(0);
+    final retval = value.sublist(4, len + 4);
+    return retval;
   }
 }
 

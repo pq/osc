@@ -6,6 +6,8 @@ import 'package:meta/meta.dart';
 
 import 'message.dart';
 
+const BlobCodec blobCodec = BlobCodec();
+
 const FloatCodec floatCodec = FloatCodec();
 
 const IntCodec intCodec = IntCodec();
@@ -17,7 +19,7 @@ const StringCodec stringCodec = StringCodec();
 abstract class DataCodec<T> extends Codec<T, List<int>> {
   static final List<DataCodec<Object>> codecs =
       List<DataCodec<Object>>.unmodifiable(
-          <DataCodec<Object>>[intCodec, floatCodec, stringCodec]);
+          <DataCodec<Object>>[blobCodec, intCodec, floatCodec, stringCodec]);
 
   final String typeTag;
 
@@ -46,6 +48,50 @@ abstract class DataDecoder<T> extends Converter<List<int>, T> {
 
 abstract class DataEncoder<T> extends Converter<T, List<int>> {
   const DataEncoder();
+}
+
+class BlobCodec extends DataCodec<Uint8List> {
+  const BlobCodec() : super(typeTag: 'b');
+
+  @override
+  Converter<List<int>, Uint8List> get decoder => const BlobDecoder();
+
+  @override
+  Converter<Uint8List, List<int>> get encoder => const BlobEncoder();
+
+  @override
+  int length(Uint8List value) => value.lengthInBytes;
+
+  @override
+  Uint8List toValue(String string) => string.codeUnits;
+}
+
+class BlobDecoder extends DataDecoder<Uint8List> {
+  const BlobDecoder();
+
+  @override
+  Uint8List convert(List<int> value) {
+    final buffer = Uint8List.fromList(value).buffer;
+    final byteData = ByteData.view(buffer);
+    final len = byteData.getInt32(0);
+    final retval = value.sublist(4, len + 4);
+    return retval;
+  }
+}
+
+class BlobEncoder extends DataEncoder<Uint8List> {
+  const BlobEncoder();
+
+  @override
+  List<int> convert(Uint8List value) {
+    final len = value.length;
+    final list = Uint8List(4);
+    final byteData = ByteData.view(list.buffer);
+    byteData.setInt32(0, len);
+    final retval = list.toList();
+    retval.addAll(value);
+    return retval;
+  }
 }
 
 class FloatCodec extends DataCodec<double> {
@@ -123,6 +169,52 @@ class IntEncoder extends DataEncoder<int> {
     final byteData = ByteData.view(list.buffer);
     byteData.setInt32(0, value);
     return list;
+  }
+}
+
+class StringCodec extends DataCodec<String> {
+  const StringCodec() : super(typeTag: 's');
+
+  @override
+  Converter<List<int>, String> get decoder => const StringDecoder();
+
+  @override
+  Converter<String, List<int>> get encoder => const StringEncoder();
+
+  @override
+  int length(String value) => value.length;
+
+  @override
+  String toValue(String string) => string;
+}
+
+class StringDecoder extends DataDecoder<String> {
+  const StringDecoder();
+
+  @override
+  String convert(List<int> input) {
+    final nextNull = input.indexOf(0);
+    if (nextNull == -1) {
+      return utf8.decode(input);
+    } else {
+      return utf8.decode(input.sublist(0, nextNull));
+    }
+  }
+}
+
+class StringEncoder extends DataEncoder<String> {
+  const StringEncoder();
+
+  @override
+  List<int> convert(String input) {
+    // final bytes = utf8.encode(input).toList();
+    final bytes = input.codeUnits.toList();
+    bytes.add(0);
+
+    final pad = (4 - bytes.length % 4) % 4;
+    bytes.addAll(List.generate(pad, (i) => 0));
+
+    return bytes;
   }
 }
 
@@ -237,6 +329,8 @@ class OSCMessageParser {
         args.add(value);
 
         index += codec.length(value);
+        // if (value is String) eat(byte: 0);
+        align();
       }
     }
 
@@ -250,43 +344,5 @@ class OSCMessageParser {
     }
 
     return input.sublist(index, index += count);
-  }
-}
-
-class StringCodec extends DataCodec<String> {
-  const StringCodec() : super(typeTag: 's');
-
-  @override
-  Converter<List<int>, String> get decoder => const StringDecoder();
-
-  @override
-  Converter<String, List<int>> get encoder => const StringEncoder();
-
-  @override
-  int length(String value) => value.length;
-
-  @override
-  String toValue(String string) => string;
-}
-
-class StringDecoder extends DataDecoder<String> {
-  const StringDecoder();
-
-  @override
-  String convert(List<int> input) => utf8.decode(input);
-}
-
-class StringEncoder extends DataEncoder<String> {
-  const StringEncoder();
-
-  @override
-  List<int> convert(String input) {
-    final bytes = utf8.encode(input).toList();
-    bytes.add(0);
-
-    final pad = (4 - bytes.length % 4) % 4;
-    bytes.addAll(List.generate(pad, (i) => 0));
-
-    return bytes;
   }
 }

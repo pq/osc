@@ -2,14 +2,15 @@
 	"patcher" : 	{
 		"fileversion" : 1,
 		"appversion" : 		{
-			"major" : 7,
-			"minor" : 3,
-			"revision" : 6,
+			"major" : 8,
+			"minor" : 1,
+			"revision" : 8,
 			"architecture" : "x64",
 			"modernui" : 1
 		}
 ,
-		"rect" : [ 1023.0, 304.0, 871.0, 781.0 ],
+		"classnamespace" : "box",
+		"rect" : [ 630.0, 264.0, 871.0, 781.0 ],
 		"bglocked" : 0,
 		"openinpresentation" : 0,
 		"default_fontsize" : 12.0,
@@ -36,6 +37,7 @@
 		"tags" : "",
 		"style" : "",
 		"subpatcher_template" : "",
+		"assistshowspatchername" : 0,
 		"boxes" : [ 			{
 				"box" : 				{
 					"fontname" : "Arial",
@@ -45,8 +47,7 @@
 					"maxclass" : "comment",
 					"numinlets" : 1,
 					"numoutlets" : 0,
-					"patching_rect" : [ 496.0, 281.514557, 177.0, 60.0 ],
-					"style" : "",
+					"patching_rect" : [ 496.0, 281.514557000000025, 177.0, 60.0 ],
 					"text" : "monome grid emulation"
 				}
 
@@ -60,7 +61,6 @@
 					"numinlets" : 1,
 					"numoutlets" : 0,
 					"patching_rect" : [ 15.0, 180.0, 69.0, 33.0 ],
-					"style" : "",
 					"text" : "echo"
 				}
 
@@ -72,8 +72,7 @@
 					"numinlets" : 2,
 					"numoutlets" : 2,
 					"outlettype" : [ "", "" ],
-					"patching_rect" : [ 454.0, 367.529114, 87.0, 22.0 ],
-					"style" : "",
+					"patching_rect" : [ 454.0, 367.529113999999993, 87.0, 22.0 ],
 					"text" : "route /grid/key"
 				}
 
@@ -87,9 +86,8 @@
 					"numoutlets" : 2,
 					"outlettype" : [ "list", "list" ],
 					"parameter_enable" : 0,
-					"patching_rect" : [ 454.0, 401.014557, 130.0, 66.0 ],
-					"rows" : 8,
-					"style" : ""
+					"patching_rect" : [ 454.0, 401.014557000000025, 130.0, 66.0 ],
+					"rows" : 8
 				}
 
 			}
@@ -100,8 +98,7 @@
 					"numinlets" : 2,
 					"numoutlets" : 1,
 					"outlettype" : [ "" ],
-					"patching_rect" : [ 454.0, 488.014526, 151.0, 22.0 ],
-					"style" : "",
+					"patching_rect" : [ 454.0, 488.014525999999989, 151.0, 22.0 ],
 					"text" : "/grid/led/level/set $1 $2 $3"
 				}
 
@@ -113,8 +110,7 @@
 					"numinlets" : 2,
 					"numoutlets" : 1,
 					"outlettype" : [ "" ],
-					"patching_rect" : [ 480.0, 566.014526, 61.0, 22.0 ],
-					"style" : "",
+					"patching_rect" : [ 480.0, 566.014526000000046, 61.0, 22.0 ],
 					"text" : "port 4440"
 				}
 
@@ -126,8 +122,7 @@
 					"numinlets" : 2,
 					"numoutlets" : 1,
 					"outlettype" : [ "" ],
-					"patching_rect" : [ 553.0, 566.014526, 132.0, 22.0 ],
-					"style" : "",
+					"patching_rect" : [ 553.0, 566.014526000000046, 132.0, 22.0 ],
 					"text" : "/grid/led/level/set 0 0 4"
 				}
 
@@ -141,8 +136,7 @@
 					"maxclass" : "newobj",
 					"numinlets" : 1,
 					"numoutlets" : 0,
-					"patching_rect" : [ 454.0, 625.014526, 151.0, 23.0 ],
-					"style" : "",
+					"patching_rect" : [ 454.0, 625.014526000000046, 151.0, 23.0 ],
 					"text" : "udpsend 127.0.0.1 4440"
 				}
 
@@ -157,7 +151,6 @@
 					"numinlets" : 1,
 					"numoutlets" : 0,
 					"patching_rect" : [ 172.5, 268.0, 132.0, 36.0 ],
-					"style" : "",
 					"text" : "set port to send messages to at host",
 					"textcolor" : [ 0.501961, 0.501961, 0.501961, 1.0 ]
 				}
@@ -172,7 +165,6 @@
 					"numinlets" : 1,
 					"numoutlets" : 0,
 					"patching_rect" : [ 123.0, 230.5, 150.0, 21.0 ],
-					"style" : "",
 					"text" : "set the host ip address",
 					"textcolor" : [ 0.501961, 0.501961, 0.501961, 1.0 ]
 				}
@@ -188,7 +180,6 @@
 					"numoutlets" : 1,
 					"outlettype" : [ "" ],
 					"patching_rect" : [ 95.5, 268.0, 65.0, 23.0 ],
-					"style" : "",
 					"text" : "port 4440"
 				}
 
@@ -202,7 +193,6 @@
 					"numinlets" : 1,
 					"numoutlets" : 0,
 					"patching_rect" : [ 18.0, 82.0, 411.0, 21.0 ],
-					"style" : "",
 					"text" : "Receive OSC messages.",
 					"textcolor" : [ 0.0, 0.0, 0.0, 1.0 ]
 				}
@@ -217,7 +207,6 @@
 					"numinlets" : 1,
 					"numoutlets" : 0,
 					"patching_rect" : [ 18.0, 13.0, 317.0, 60.0 ],
-					"style" : "",
 					"text" : "osc_receiver",
 					"textcolor" : [ 0.0, 0.0, 0.0, 1.0 ]
 				}
@@ -233,7 +222,6 @@
 					"numoutlets" : 1,
 					"outlettype" : [ "" ],
 					"patching_rect" : [ 15.0, 230.5, 93.0, 23.0 ],
-					"style" : "",
 					"text" : "host 127.0.0.1"
 				}
 
@@ -247,7 +235,6 @@
 					"numinlets" : 1,
 					"numoutlets" : 0,
 					"patching_rect" : [ 18.0, 108.0, 411.0, 21.0 ],
-					"style" : "",
 					"text" : "Receives OSC messages transmitted over a network using UDP.",
 					"textcolor" : [ 0.501961, 0.501961, 0.501961, 1.0 ]
 				}
@@ -259,8 +246,7 @@
 					"maxclass" : "comment",
 					"numinlets" : 1,
 					"numoutlets" : 0,
-					"patching_rect" : [ 192.0, 363.514557, 121.0, 20.0 ],
-					"style" : "",
+					"patching_rect" : [ 192.0, 363.514557000000025, 121.0, 20.0 ],
 					"text" : "Received Messages"
 				}
 
@@ -272,8 +258,7 @@
 					"numinlets" : 1,
 					"numoutlets" : 1,
 					"outlettype" : [ "" ],
-					"patching_rect" : [ 15.0, 350.757263, 72.0, 22.0 ],
-					"style" : "",
+					"patching_rect" : [ 15.0, 350.757263000000023, 72.0, 22.0 ],
 					"text" : "prepend set"
 				}
 
@@ -282,7 +267,7 @@
 				"box" : 				{
 					"fontface" : 0,
 					"fontname" : "Arial",
-					"fontsize" : 11.595187,
+					"fontsize" : 11.595186999999999,
 					"id" : "obj-17",
 					"ignoreclick" : 1,
 					"maxclass" : "textedit",
@@ -290,9 +275,8 @@
 					"numoutlets" : 4,
 					"outlettype" : [ "", "int", "", "" ],
 					"parameter_enable" : 0,
-					"patching_rect" : [ 15.0, 385.514557, 294.0, 95.0 ],
+					"patching_rect" : [ 15.0, 385.514557000000025, 294.0, 95.0 ],
 					"readonly" : 1,
-					"style" : "",
 					"tabmode" : 0,
 					"text" : "/foo/bar"
 				}
@@ -322,7 +306,7 @@
 , 			{
 				"patchline" : 				{
 					"destination" : [ "obj-16", 0 ],
-					"midpoints" : [ 489.5, 611.014526, 463.5, 611.014526 ],
+					"midpoints" : [ 489.5, 611.014526000000046, 463.5, 611.014526000000046 ],
 					"source" : [ "obj-11", 0 ]
 				}
 
@@ -330,7 +314,7 @@
 , 			{
 				"patchline" : 				{
 					"destination" : [ "obj-16", 0 ],
-					"midpoints" : [ 562.5, 611.014526, 463.5, 611.014526 ],
+					"midpoints" : [ 562.5, 611.014526000000046, 463.5, 611.014526000000046 ],
 					"source" : [ "obj-13", 0 ]
 				}
 
@@ -403,8 +387,8 @@
 , 			{
 				"name" : "newobjYellow-1",
 				"default" : 				{
-					"accentcolor" : [ 0.82517, 0.78181, 0.059545, 1.0 ],
-					"fontsize" : [ 12.059008 ]
+					"fontsize" : [ 12.059008 ],
+					"accentcolor" : [ 0.82517, 0.78181, 0.059545, 1.0 ]
 				}
 ,
 				"parentstyle" : "",

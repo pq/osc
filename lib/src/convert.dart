@@ -1,3 +1,7 @@
+// Copyright (c) 2021, Google LLC. Please see the AUTHORS file
+// for details. All rights reserved. Use of this source code is governed by a
+// BSD-style license that can be found in the LICENSE file.
+
 import 'dart:convert';
 import 'dart:io';
 import 'dart:typed_data';
@@ -30,14 +34,16 @@ abstract class DataCodec<T> extends Codec<T, List<int>> {
   T toValue(String string);
 
   /// TODO: Rename?
-  static DataCodec<T> forType<T>(String typeTag) => codecs.firstWhere(
-      (codec) => codec.typeTag == typeTag,
-      orElse: (() => throw ArgumentError('Unsupported codec typeTag: $typeTag'))) as DataCodec<T>;
+  static DataCodec<T> forType<T>(String typeTag) =>
+      codecs.firstWhere((codec) => codec.typeTag == typeTag,
+              orElse: (() =>
+                  throw ArgumentError('Unsupported codec typeTag: $typeTag')))
+          as DataCodec<T>;
 
-  static DataCodec<T> forValue<T>(T value) => codecs.firstWhere(
-      (codec) => codec.appliesTo(value),
-      orElse: (() =>
-          throw ArgumentError('Unsupported codec type: ${value.runtimeType}'))) as DataCodec<T>;
+  static DataCodec<T> forValue<T>(T value) =>
+      codecs.firstWhere((codec) => codec.appliesTo(value),
+          orElse: (() => throw ArgumentError(
+              'Unsupported codec type: ${value.runtimeType}'))) as DataCodec<T>;
 }
 
 abstract class DataDecoder<T> extends Converter<List<int>, T> {

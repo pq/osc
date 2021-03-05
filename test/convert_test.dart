@@ -1,3 +1,7 @@
+// Copyright (c) 2021, Google LLC. Please see the AUTHORS file
+// for details. All rights reserved. Use of this source code is governed by a
+// BSD-style license that can be found in the LICENSE file.
+
 import 'package:osc/src/convert.dart';
 import 'package:osc/src/message.dart';
 import 'package:test/test.dart';

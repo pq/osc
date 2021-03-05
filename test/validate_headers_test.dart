@@ -11,9 +11,6 @@ void main() {
     test('... in lib', () async {
       await validate('lib');
     });
-    test('... in tool', () async {
-      await validate('tool');
-    });
   });
 }
 

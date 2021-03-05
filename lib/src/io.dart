@@ -3,16 +3,16 @@ import 'dart:io';
 import '../osc.dart';
 
 class OSCSocket {
-  final InternetAddress destination;
-  final int destinationPort;
+  final InternetAddress? destination;
+  final int? destinationPort;
 
-  final InternetAddress serverAddress;
-  final int serverPort;
+  final InternetAddress? serverAddress;
+  final int? serverPort;
 
-  InternetAddress lastMessageAddress;
-  int lastMessagePort;
+  InternetAddress? lastMessageAddress;
+  int? lastMessagePort;
 
-  RawDatagramSocket _socket;
+  RawDatagramSocket? _socket;
 
   OSCSocket({
     this.destination,
@@ -36,8 +36,8 @@ class OSCSocket {
   Future<void> listen(void Function(OSCMessage msg) onData) async {
     _socket ??= await setupSocket();
 
-    _socket.listen((e) {
-      final datagram = _socket.receive();
+    _socket!.listen((e) {
+      final datagram = _socket!.receive();
       if (datagram != null) {
         lastMessageAddress = datagram.address;
         lastMessagePort = datagram.port;
@@ -51,14 +51,13 @@ class OSCSocket {
     _socket ??= await setupSocket();
     var to = destination ?? lastMessageAddress;
     var port = destinationPort ?? lastMessagePort;
-
     if (to == null || port == null) return 0;
-    return _socket.send(msg.toBytes(), to, port);
+    return _socket!.send(msg.toBytes(), to, port);
   }
 
   Future<int> reply(OSCMessage msg) async {
     _socket ??= await setupSocket();
     if (lastMessageAddress == null || lastMessagePort == null) return 0;
-    return _socket.send(msg.toBytes(), lastMessageAddress, lastMessagePort);
+    return _socket!.send(msg.toBytes(), lastMessageAddress!, lastMessagePort!);
   }
 }

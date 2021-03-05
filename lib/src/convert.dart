@@ -2,8 +2,6 @@ import 'dart:convert';
 import 'dart:io';
 import 'dart:typed_data';
 
-import 'package:meta/meta.dart';
-
 import 'message.dart';
 
 const BlobCodec blobCodec = BlobCodec();
@@ -23,23 +21,23 @@ abstract class DataCodec<T> extends Codec<T, List<int>> {
 
   final String typeTag;
 
-  const DataCodec({this.typeTag});
+  const DataCodec({required this.typeTag});
 
-  bool appliesTo(Object value) => value is T;
+  bool appliesTo(Object? value) => value is T;
 
   int length(T value);
 
   T toValue(String string);
 
-  // TODO: Rename?
+  /// TODO: Rename?
   static DataCodec<T> forType<T>(String typeTag) => codecs.firstWhere(
       (codec) => codec.typeTag == typeTag,
-      orElse: () => throw ArgumentError('Unsupported codec typeTag: $typeTag'));
+      orElse: (() => throw ArgumentError('Unsupported codec typeTag: $typeTag'))) as DataCodec<T>;
 
   static DataCodec<T> forValue<T>(T value) => codecs.firstWhere(
       (codec) => codec.appliesTo(value),
-      orElse: () =>
-          throw ArgumentError('Unsupported codec type: ${value.runtimeType}'));
+      orElse: (() =>
+          throw ArgumentError('Unsupported codec type: ${value.runtimeType}'))) as DataCodec<T>;
 }
 
 abstract class DataDecoder<T> extends Converter<List<int>, T> {
@@ -63,7 +61,7 @@ class BlobCodec extends DataCodec<Uint8List> {
   int length(Uint8List value) => value.lengthInBytes;
 
   @override
-  Uint8List toValue(String string) => string.codeUnits;
+  Uint8List toValue(String string) => string.codeUnits as Uint8List;
 }
 
 class BlobDecoder extends DataDecoder<Uint8List> {
@@ -75,7 +73,7 @@ class BlobDecoder extends DataDecoder<Uint8List> {
     final byteData = ByteData.view(buffer);
     final len = byteData.getInt32(0);
     final retval = value.sublist(4, len + 4);
-    return retval;
+    return retval as Uint8List;
   }
 }
 
@@ -290,7 +288,7 @@ class OSCMessageParser {
   final List<int> input;
   OSCMessageParser(this.input);
 
-  void advance({@required String char}) {
+  void advance({required String char}) {
     if (input[index++] != stringCodec.encode(char)[0]) {
       //TODO: throw
     }
@@ -302,7 +300,7 @@ class OSCMessageParser {
 
   String asString(List<int> bytes) => stringCodec.decode(bytes);
 
-  void eat({@required int byte}) {
+  void eat({required int byte}) {
     if (input[++index] != byte) {
       //TODO: throw
     }
@@ -337,7 +335,7 @@ class OSCMessageParser {
     return OSCMessage(address, arguments: args);
   }
 
-  List<int> takeUntil({@required int byte}) {
+  List<int> takeUntil({required int byte}) {
     final count = input.indexOf(byte, index) - index;
     if (count < 1) {
       //TODO: throw

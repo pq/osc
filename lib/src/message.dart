@@ -6,7 +6,6 @@ final _illegalAddressChars = RegExp('[#*,?]');
 
 //' ', '#', '*', ',', '?', '[', ']', '{', '}'
 bool _isValid(String address) =>
-    address != null &&
     address.isNotEmpty &&
     address[0] == '/' &&
     !_illegalAddressChars.hasMatch(address);
@@ -17,7 +16,7 @@ class OSCMessage {
 
   final _builder = OSCMessageBuilder();
 
-  OSCMessage(this.address, {this.arguments}) {
+  OSCMessage(this.address, {required this.arguments}) {
     if (!_isValid(address)) {
       throw ArgumentError('Invalid address: $address');
     }

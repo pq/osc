@@ -37,10 +37,10 @@ class OSCMessage {
       address.hashCode ^ const IterableEquality().hash(arguments);
 
   @override
-  bool operator ==(o) =>
-      o is OSCMessage &&
-      o.address == address &&
-      const IterableEquality().equals(o.arguments, arguments);
+  bool operator ==(other) =>
+      other is OSCMessage &&
+      other.address == address &&
+      const IterableEquality().equals(other.arguments, arguments);
 
   List<int> toBytes() => _builder.toBytes();
 

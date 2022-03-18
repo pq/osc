@@ -3,7 +3,6 @@
 // BSD-style license that can be found in the LICENSE file.
 
 import 'dart:convert';
-import 'dart:io';
 import 'dart:typed_data';
 
 import 'message.dart';
@@ -74,11 +73,11 @@ class BlobDecoder extends DataDecoder<Uint8List> {
   const BlobDecoder();
 
   @override
-  Uint8List convert(List<int> value) {
-    final buffer = Uint8List.fromList(value).buffer;
+  Uint8List convert(List<int> input) {
+    final buffer = Uint8List.fromList(input).buffer;
     final byteData = ByteData.view(buffer);
     final len = byteData.getInt32(0);
-    final retval = value.sublist(4, len + 4);
+    final retval = input.sublist(4, len + 4);
     return retval as Uint8List;
   }
 }
@@ -87,13 +86,13 @@ class BlobEncoder extends DataEncoder<Uint8List> {
   const BlobEncoder();
 
   @override
-  List<int> convert(Uint8List value) {
-    final len = value.length;
+  List<int> convert(Uint8List input) {
+    final len = input.length;
     final list = Uint8List(4);
     final byteData = ByteData.view(list.buffer);
     byteData.setInt32(0, len);
     final retval = list.toList();
-    retval.addAll(value);
+    retval.addAll(input);
     return retval;
   }
 }
@@ -118,8 +117,8 @@ class FloatDecoder extends DataDecoder<double> {
   const FloatDecoder();
 
   @override
-  double convert(List<int> value) {
-    final buffer = Uint8List.fromList(value).buffer;
+  double convert(List<int> input) {
+    final buffer = Uint8List.fromList(input).buffer;
     final byteData = ByteData.view(buffer);
     return byteData.getFloat32(0);
   }
@@ -129,10 +128,10 @@ class FloatEncoder extends DataEncoder<double> {
   const FloatEncoder();
 
   @override
-  List<int> convert(double value) {
+  List<int> convert(double input) {
     final list = Uint8List(4);
     final byteData = ByteData.view(list.buffer);
-    byteData.setFloat32(0, value);
+    byteData.setFloat32(0, input);
     return list;
   }
 }
@@ -157,8 +156,8 @@ class IntDecoder extends DataDecoder<int> {
   const IntDecoder();
 
   @override
-  int convert(List<int> value) {
-    final buffer = Uint8List.fromList(value).buffer;
+  int convert(List<int> input) {
+    final buffer = Uint8List.fromList(input).buffer;
     final byteData = ByteData.view(buffer);
     return byteData.getInt32(0);
   }
@@ -168,10 +167,10 @@ class IntEncoder extends DataEncoder<int> {
   const IntEncoder();
 
   @override
-  List<int> convert(int value) {
+  List<int> convert(int input) {
     final list = Uint8List(4);
     final byteData = ByteData.view(list.buffer);
-    byteData.setInt32(0, value);
+    byteData.setInt32(0, input);
     return list;
   }
 }
@@ -280,10 +279,10 @@ class OSCMessageEncoder extends DataEncoder<OSCMessage> {
   const OSCMessageEncoder();
 
   @override
-  List<int> convert(OSCMessage msg) {
+  List<int> convert(OSCMessage input) {
     final builder = OSCMessageBuilder();
-    builder.addAddress(msg.address);
-    builder.addArguments(msg.arguments);
+    builder.addAddress(input.address);
+    builder.addArguments(input.arguments);
     return builder.toBytes();
   }
 }

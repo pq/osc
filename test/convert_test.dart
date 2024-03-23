@@ -79,6 +79,18 @@ void main() {
       });
     });
 
+    group('doubles', () {
+      test('decode', () {
+        expect(doubleCodec.decoder.convert([64, 94, 220, 204, 204, 204, 204, 205]),
+            closeTo(123.45, 1e-5));
+      });
+
+      test('encode', () {
+        expect(doubleCodec.encoder.convert(123.45), [64, 94, 220, 204, 204, 204, 204, 205]);
+      });
+    });
+
+
     group('strings', () {
       test('decode', () {
         expect(stringCodec.decoder.convert([102, 111, 111]), 'foo');

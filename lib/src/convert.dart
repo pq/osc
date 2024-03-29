@@ -227,7 +227,7 @@ class StringCodec extends DataCodec<String> {
   Converter<String, List<int>> get encoder => const StringEncoder();
 
   @override
-  int length(String value) => value.length;
+  int length(String value) =>  value.length % 4 == 0 ? value.length + 1 : value.length;
 
   @override
   String toValue(String string) => string;

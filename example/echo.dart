@@ -1,5 +1,5 @@
 import 'package:ansicolor/ansicolor.dart';
-import 'package:osc/osc.dart';
+import 'package:osc_base/osc.dart';
 
 const int defaultPort = 4440;
 

@@ -210,8 +210,8 @@ class StringEncoder extends DataEncoder<String> {
 
   @override
   List<int> convert(String input) {
-    // final bytes = utf8.encode(input).toList();
-    final bytes = input.codeUnits.toList();
+    final bytes = utf8.encode(input).toList();
+    // final bytes = input.codeUnits.toList();
     bytes.add(0);
 
     final pad = (4 - bytes.length % 4) % 4;

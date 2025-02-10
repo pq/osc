@@ -1,4 +1,4 @@
-name: osc_base
+name: osc
 version: 1.1.0
 
 description: A simple Open Sound Control (OSC) protocol implementation for Dart.

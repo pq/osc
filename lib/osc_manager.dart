@@ -82,9 +82,9 @@ class OscManager {
   void _handleOsc(OSCMessage parsedMsg) {
     final handler = _handlers[parsedMsg.address];
 
-    if (handler != null) {
-      handler(parsedMsg);
-    } else {
+    try {
+      handler!(parsedMsg);
+    } catch (e) {
       print("처리할 핸들러가 없음: ${parsedMsg.address}");
     }
   }

@@ -2,8 +2,8 @@
 // for details. All rights reserved. Use of this source code is governed by a
 // BSD-style license that can be found in the LICENSE file.
 
-import 'package:osc/src/convert.dart';
-import 'package:osc/src/message.dart';
+import 'package:osc/core/convert.dart';
+import 'package:osc/core/message.dart';
 import 'package:test/test.dart';
 
 void main() {

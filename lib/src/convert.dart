@@ -20,7 +20,7 @@ const StringCodec stringCodec = StringCodec();
 abstract class DataCodec<T> extends Codec<T, List<int>> {
   static final List<DataCodec<Object>> codecs =
       List<DataCodec<Object>>.unmodifiable(
-          <DataCodec<Object>>[blobCodec, intCodec, floatCodec, stringCodec]);
+          <DataCodec<Object>>[blobCodec, intCodec, floatCodec, stringCodec, booleanTrueCodec, booleanFalseCodec]);
 
   final String typeTag;
 
@@ -220,6 +220,73 @@ class StringEncoder extends DataEncoder<String> {
     return bytes;
   }
 }
+
+/// Boolean codecs for OSC booleans ('T' = true, 'F' = false).
+const BooleanTrueCodec booleanTrueCodec = BooleanTrueCodec();
+const BooleanFalseCodec booleanFalseCodec = BooleanFalseCodec();
+
+class BooleanTrueCodec extends DataCodec<bool> {
+  const BooleanTrueCodec() : super(typeTag: 'T');
+
+  @override
+  bool appliesTo(Object? value) => value == true;
+
+  @override
+  Converter<List<int>, bool> get decoder => const _BooleanTrueDecoder();
+
+  @override
+  Converter<bool, List<int>> get encoder => const _BooleanTrueEncoder();
+
+  @override
+  int length(bool value) => 0;
+
+  @override
+  bool toValue(String string) => true;
+}
+
+class _BooleanTrueDecoder extends DataDecoder<bool> {
+  const _BooleanTrueDecoder();
+  @override
+  bool convert(List<int> value) => true;
+}
+
+class _BooleanTrueEncoder extends DataEncoder<bool> {
+  const _BooleanTrueEncoder();
+  @override
+  List<int> convert(bool value) => <int>[];
+}
+
+class BooleanFalseCodec extends DataCodec<bool> {
+  const BooleanFalseCodec() : super(typeTag: 'F');
+
+  @override
+  bool appliesTo(Object? value) => value == false;
+
+  @override
+  Converter<List<int>, bool> get decoder => const _BooleanFalseDecoder();
+
+  @override
+  Converter<bool, List<int>> get encoder => const _BooleanFalseEncoder();
+
+  @override
+  int length(bool value) => 0;
+
+  @override
+  bool toValue(String string) => false;
+}
+
+class _BooleanFalseDecoder extends DataDecoder<bool> {
+  const _BooleanFalseDecoder();
+  @override
+  bool convert(List<int> value) => false;
+}
+
+class _BooleanFalseEncoder extends DataEncoder<bool> {
+  const _BooleanFalseEncoder();
+  @override
+  List<int> convert(bool value) => <int>[];
+}
+
 
 class OSCMessageBuilder {
   final _builder = BytesBuilder();

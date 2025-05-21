@@ -20,6 +20,9 @@ const OSCMessageCodec oscMessageCodec = OSCMessageCodec();
 const StringCodec stringCodec = StringCodec();
 
 abstract class DataCodec<T> extends Codec<T, List<int>> {
+
+  // `doubleCodec` is last, as it is in the extended definition. We only want to
+  // send it explicitly, so `floatCodec` should be ahead of it.
   static final List<DataCodec<Object>> codecs =
       List<DataCodec<Object>>.unmodifiable(
           <DataCodec<Object>>[blobCodec, intCodec, floatCodec, stringCodec, doubleCodec]);

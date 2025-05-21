@@ -11,6 +11,8 @@ const BlobCodec blobCodec = BlobCodec();
 
 const FloatCodec floatCodec = FloatCodec();
 
+const DoubleCodec doubleCodec = DoubleCodec();
+
 const IntCodec intCodec = IntCodec();
 
 const OSCMessageCodec oscMessageCodec = OSCMessageCodec();
@@ -18,9 +20,12 @@ const OSCMessageCodec oscMessageCodec = OSCMessageCodec();
 const StringCodec stringCodec = StringCodec();
 
 abstract class DataCodec<T> extends Codec<T, List<int>> {
+
+  // `doubleCodec` is last, as it is in the extended definition. We only want to
+  // send it explicitly, so `floatCodec` should be ahead of it.
   static final List<DataCodec<Object>> codecs =
       List<DataCodec<Object>>.unmodifiable(
-          <DataCodec<Object>>[blobCodec, intCodec, floatCodec, stringCodec]);
+          <DataCodec<Object>>[blobCodec, intCodec, floatCodec, stringCodec, doubleCodec]);
 
   final String typeTag;
 
@@ -136,6 +141,46 @@ class FloatEncoder extends DataEncoder<double> {
   }
 }
 
+class DoubleCodec extends DataCodec<double> {
+  const DoubleCodec() : super(typeTag: 'd');
+
+  @override
+  Converter<List<int>, double> get decoder => const DoubleDecoder();
+
+  @override
+  Converter<double, List<int>> get encoder => const DoubleEncoder();
+
+  @override
+  int length(double value) => 8;
+
+  @override
+  double toValue(String string) => double.parse(string);
+}
+
+class DoubleDecoder extends DataDecoder<double> {
+  const DoubleDecoder();
+
+  @override
+  double convert(List<int> input) {
+    final buffer = Uint8List.fromList(input).buffer;
+    final byteData = ByteData.view(buffer);
+    return byteData.getFloat64(0);
+  }
+}
+
+
+class DoubleEncoder extends DataEncoder<double> {
+  const DoubleEncoder();
+
+  @override
+  List<int> convert(double input) {
+    final list = Uint8List(8);
+    final byteData = ByteData.view(list.buffer);
+    byteData.setFloat64(0, input);
+    return list;
+  }
+}
+
 class IntCodec extends DataCodec<int> {
   const IntCodec() : super(typeTag: 'i');
 
@@ -185,7 +230,7 @@ class StringCodec extends DataCodec<String> {
   Converter<String, List<int>> get encoder => const StringEncoder();
 
   @override
-  int length(String value) => value.length;
+  int length(String value) =>  value.length % 4 == 0 ? value.length + 1 : value.length;
 
   @override
   String toValue(String string) => string;
